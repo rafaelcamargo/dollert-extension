@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    title Dollert
+
+  body
+    div Enter the USD value you are looking for in BRL:
+    ul(data-js="alerts-lsit")
+      input(data-js="usd-value" name="usd-value")
+      button(data-js="button-save" type="button") Save
+
+    script(type="text/javascript" src="dollert.js")
+    script dollert.init();
