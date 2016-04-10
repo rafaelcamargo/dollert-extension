@@ -149,7 +149,7 @@ module.exports = function(grunt) {
     },
 
     exec: {
-      clearDist: 'rm -rf ./dist'
+      clearDist: 'rm -rf ./dist; rm ./dist.zip'
     },
 
     zip: {

@@ -171,3 +171,4 @@ spec/visual/results/
 #Other
 ./install/
 angular-route.min.js.map
+dist.zip
