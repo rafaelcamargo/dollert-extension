@@ -17,6 +17,7 @@ module.exports = function(grunt) {
   var imageFiles = pathImages + '**/*';
   var specFiles = pathSpec + '**/*-spec.js';
   var manifestFile = pathSrc + 'manifest.json';
+  var distFiles = pathDist + '**/*.*';
   var configFiles = [
     'package.json',
     'gruntfile.js',
@@ -149,6 +150,10 @@ module.exports = function(grunt) {
 
     exec: {
       clearDist: 'rm -rf ./dist'
+    },
+
+    zip: {
+      './dist.zip': distFiles
     }
 
   });
@@ -163,6 +168,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-exec');
+  grunt.loadNpmTasks('grunt-zip');
 
   grunt.registerTask('build', [
     'stylus',
@@ -182,7 +188,8 @@ module.exports = function(grunt) {
     'exec:clearDist',
     'build',
     'cssmin',
-    'uglify'
+    'uglify',
+    'zip'
   ]);
 
 };
