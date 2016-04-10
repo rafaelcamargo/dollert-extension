@@ -149,7 +149,7 @@ module.exports = function(grunt) {
     },
 
     exec: {
-      clearDist: 'rm -rf ./dist; rm ./dist.zip'
+      setupDeploy: 'node ./setup-deploy'
     },
 
     zip: {
@@ -185,7 +185,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('deploy', [
-    'exec:clearDist',
+    'exec:setupDeploy',
     'build',
     'cssmin',
     'uglify',
