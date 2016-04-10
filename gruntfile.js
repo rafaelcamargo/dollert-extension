@@ -12,7 +12,7 @@ module.exports = function(grunt) {
   var pathMonitoring = pathScripts + 'monitoring/';
   var libFiles = pathLibs + '**/*.min.js';
   var styleFiles = pathStyles + '**/*.styl';
-  var scriptFiles = pathScripts + 'dollert.js';
+  var scriptFiles = pathScripts + '**/*.js';
   var templateFiles = pathTemplates + '**/*.jade';
   var imageFiles = pathImages + '**/*';
   var specFiles = pathSpec + '**/*-spec.js';
@@ -28,7 +28,7 @@ module.exports = function(grunt) {
     stylus: {
       compile: {
         files: {
-          'dist/dollert.min.css': styleFiles
+          'dist/popup.min.css': styleFiles
         }
       }
     },
@@ -36,7 +36,7 @@ module.exports = function(grunt) {
     cssmin: {
       target: {
         files: {
-          'dist/dollert.min.css': pathDist + 'dollert.min.css'
+          'dist/popup.min.css': pathDist + 'popup.min.css'
         }
       }
     },
@@ -79,7 +79,8 @@ module.exports = function(grunt) {
       },
       dollert: {
         files : {
-          'dist/dollert.min.js': pathDist + 'dollert.min.js'
+          'dist/popup.min.js': pathDist + 'popup.min.js',
+          'dist/notifier.min.js': pathDist + 'notifier.min.js'
         }
       }
     },
@@ -87,9 +88,15 @@ module.exports = function(grunt) {
     concat_in_order: {
       dist : {
         files : {
-          'dist/dollert.min.js': [
+          'dist/popup.min.js': [
             pathLibs + 'jquery/dist/jquery.min.js',
-            scriptFiles
+            pathScripts + 'chrome-service.js',
+            pathScripts + 'popup.js'
+          ],
+          'dist/notifier.min.js': [
+            pathLibs + 'jquery/dist/jquery.min.js',
+            pathScripts + 'chrome-service.js',
+            pathScripts + 'notifier-service.js'
           ]
         }
       }
@@ -109,7 +116,7 @@ module.exports = function(grunt) {
     watch: {
       styles: {
         files: styleFiles,
-        tasks: ['stylus']
+        tasks: ['stylus','cssmin']
       },
       dist: {
         files: scriptFiles,
@@ -117,6 +124,10 @@ module.exports = function(grunt) {
           'jshint:dist',
           'concat_in_order:dist'
         ]
+      },
+      images: {
+        files: imageFiles,
+        tasks: ['copy:images']        
       },
       templates: {
         files: templateFiles,
@@ -129,7 +140,15 @@ module.exports = function(grunt) {
       conf: {
         files: configFiles,
         tasks: ['jshint:conf']
+      },
+      manifest: {
+        files: manifestFile,
+        tasks: ['copy:manifest']
       }
+    },
+
+    exec: {
+      clearDist: 'rm -rf ./dist'
     }
 
   });
@@ -143,6 +162,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jade');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-exec');
 
   grunt.registerTask('build', [
     'stylus',
@@ -159,7 +179,9 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('deploy', [
+    'exec:clearDist',
     'build',
+    'cssmin',
     'uglify'
   ]);
 

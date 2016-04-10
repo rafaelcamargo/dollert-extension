@@ -1,13 +1,22 @@
 doctype html
-html
+html(class="dollert-popup")
   head
     title Dollert
+    link(rel="stylesheet" type="text/css" href="popup.min.css")
 
   body
-    div Enter the USD value you are looking for in BRL:
-    ul(data-js="alerts-lsit")
-      input(data-js="usd-value" name="usd-value")
-      button(data-js="button-save" type="button") Save
+    .dollert-alert-form
+      .dollert-logotype-container
+        img(src="logotype.png")
+      .dollert-alert-form-label Enter the USD value you are looking for in BRL:
+      .dollert-input-buttoned
+        input(data-js="usd-value" placeholder="i.e: 3.70")
+        button.is-primary(data-js="button-save" type="button") Save
 
-    script(type="text/javascript" src="dollert.js")
-    script dollert.init();
+    .dollert-alert-list-cotnainer.is-hidden(data-js="alert-list-container")
+      .dollert-alert-list-title Your Dollerts
+      ul.dollert-alert-list(data-js="alert-list")
+    p.dollert-credits Proudly made by 
+      a(href="http://rafaelcamargo.com") Rafael Camargo
+    
+    script(type="text/javascript" src="popup.min.js")

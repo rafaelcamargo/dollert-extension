@@ -1,0 +1,35 @@
+@import '_variables'
+
+*
+  font-family 'Helvetica', 'Arial', sans-serif;
+
+body
+  margin 0
+  padding 0
+  color $color-grey-dark
+  
+a
+  color $color-primary
+  text-decoration none
+
+body, input, button
+  font-size 16px
+
+input, button
+  padding 10px
+  color $color-grey-dark
+  border 1px solid $color-grey
+  outline 0
+  border-radius(3px)
+  box-sizing(border-box)
+  
+button
+  background $color-grey
+  text-align center
+  cursor pointer
+  &.is-primary
+    color $color-white
+    background $color-primary
+    border 1px solid $color-primary
+    &:hover
+      background lighten($color-primary, 5%)

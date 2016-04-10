@@ -1,0 +1,39 @@
+@import '_variables'
+@import '_mixins'
+
+.dollert-alert-list-cotnainer
+  &.is-hidden
+    display none
+
+.dollert-alert-list-title
+  margin 25px auto 0
+  font-size 12px
+  text-align center  
+
+.dollert-alert-list
+  padding 0
+  margin 25px
+  list-style-type none
+  border 1px solid $color-grey-dark
+  border-radius(3px)
+  &.is-hidden
+    display none
+
+.alert-list-item
+  position relative
+  padding 15px 0
+  font-size 18px
+  text-align center
+  cursor pointer
+  &:not(:first-child)
+    border-top 1px solid $color-grey-dark
+  &:hover
+    .dollert-delete
+      display inline;
+    .dollert-usd-value
+      display none;
+
+.dollert-delete
+  display none;
+  color $color-red
+  text-transform uppercase
