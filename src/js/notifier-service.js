@@ -45,8 +45,7 @@
 
   function requestUSDExchangeValue(){
     getUSDExchangeValue()
-      .then(onGetUSDExchangeValueSuccess)
-      .fail(function(){alert('failed!');});
+      .then(onGetUSDExchangeValueSuccess);
   }
 
   function getUSDExchangeValue(){
