@@ -31,5 +31,12 @@ button
     color $color-white
     background $color-primary
     border 1px solid $color-primary
+    &.disabled
+      background-color $color-grey
+      border-color: $color-grey
     &:hover
       background lighten($color-primary, 5%)
+      &.disabled
+        background-color $color-grey
+        border-color $color-grey
+        cursor not-allowed

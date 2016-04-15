@@ -10,6 +10,7 @@
 
   function bindElements(){
     $('[data-js="button-save"]').on('click', onButtonSaveClick);
+    $('[data-js="usd-value"]').on('change paste keyup', onUSDValueChange);
     alertListContainer = $('[data-js="alert-list-container"');
     alertList = $('[data-js="alert-list"');
   }
@@ -23,6 +24,15 @@
     });
   }
 
+  function onUSDValueChange(){
+    var buttonSave = $('[data-js="button-save"]');
+    var USDEnteredValue = getUSDValueEntered();
+    var invalidUSDValue = isNaN(USDEnteredValue);
+    buttonSave.toggleClass('disabled', invalidUSDValue);
+    buttonSave.prop('disabled', invalidUSDValue);
+    console.log('value = ' + USDEnteredValue + ', it is invalid?=' + invalidUSDValue);
+  }
+
   function onButtonSaveClick(){
     var USDEnteredValue = getUSDValueEntered();
     addUSDValueToAlertsList(USDEnteredValue);
@@ -30,7 +40,11 @@
   }
 
   function getUSDValueEntered(){
-    return parseFloat($('[data-js="usd-value"]').val().replace(',','.'));
+    var enteredValue = $('[data-js="usd-value"]').val().replace(',', '.');
+    if (!enteredValue.match(/^[0-9]+(\.[0-9]+)?$/))
+      return NaN;
+    else
+      return parseFloat(enteredValue);
   }
 
   function buildAlertList(alerts){
