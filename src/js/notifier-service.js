@@ -1,4 +1,4 @@
-(function($, chromeService){
+(function($, chromeService, usdValueService){
 
   var USD_VALUE_RESOURCE_URL =  'http://developers.agenciaideias.com.br' +
                                 '/cotacoes/json';
@@ -44,23 +44,8 @@
   }
 
   function requestUSDExchangeValue(){
-    getUSDExchangeValue()
+    usdValueService.getCurrentValue()
       .then(onGetUSDExchangeValueSuccess);
-  }
-
-  function getUSDExchangeValue(){
-    var promise = $.Deferred();
-    $.ajax({
-      url: USD_VALUE_RESOURCE_URL,
-      'content-type': 'application/json',
-      success: function(response){
-        promise.resolve(response);
-      },
-      error: function(response){
-        promise.reject(response);
-      }
-    });
-    return promise;
   }
 
   function onGetUSDExchangeValueSuccess(response){
@@ -97,4 +82,4 @@
 
   init();
 
-})(jQuery, window.chromeService);
+})(jQuery, window.chromeService, window.usdValueService);

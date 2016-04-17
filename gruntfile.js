@@ -92,11 +92,13 @@ module.exports = function(grunt) {
           'dist/popup.min.js': [
             pathLibs + 'jquery/dist/jquery.min.js',
             pathScripts + 'chrome-service.js',
+            pathScripts + 'usd-value-service.js',
             pathScripts + 'popup.js'
           ],
           'dist/notifier.min.js': [
             pathLibs + 'jquery/dist/jquery.min.js',
             pathScripts + 'chrome-service.js',
+            pathScripts + 'usd-value-service.js',
             pathScripts + 'notifier-service.js'
           ]
         }
@@ -128,7 +130,7 @@ module.exports = function(grunt) {
       },
       images: {
         files: imageFiles,
-        tasks: ['copy:images']        
+        tasks: ['copy:images']
       },
       templates: {
         files: templateFiles,

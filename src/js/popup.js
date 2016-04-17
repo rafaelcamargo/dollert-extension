@@ -1,17 +1,20 @@
-(function($, chromeService){
+(function($, chromeService, usdValueService){
 
   var _public = {};
-  var alertList, alertListContainer;
-  
+  var alertList, alertListContainer, nowValue, nowVariation;
+
   function init(){
     bindElements();
     getSavedAlerts();
+    getNowValue();
   }
 
   function bindElements(){
     $('[data-js="button-save"]').on('click', onButtonSaveClick);
     alertListContainer = $('[data-js="alert-list-container"');
     alertList = $('[data-js="alert-list"');
+    nowValue = $('[data-js="now-value"');
+    nowVariation = $('[data-js="now-variation"');
   }
 
   function getSavedAlerts(){
@@ -58,6 +61,37 @@
       alertListContainer.addClass('is-hidden');
   }
 
+  function getNowValue() {
+    usdValueService.getCurrentValue()
+      .then(onGetUSDCurrentValueSuccess);
+  }
+
+  function onGetUSDCurrentValueSuccess(response){
+    setupUSDCurrentValue(response.dolar.cotacao);
+    setupUSDCurrentValueVariation(response.dolar.variacao);
+  }
+
+  function setupUSDCurrentValue(dolarValue){
+    var value = dolarValue.substring(0,4);
+    nowValue.text(value);
+  }
+
+  function setupUSDCurrentValueVariation(dolarVariation) {
+    var variation = dolarVariation.substring(0,5);
+
+    if(isPositiveVariation(variation)) {
+      nowVariation.addClass('is-positive');
+    } else {
+      nowVariation.addClass('is-negative');
+    }
+
+    nowVariation.text(variation);
+  }
+
+  function isPositiveVariation(variation) {
+    return parseFloat(variation) >= 0;
+  }
+
   init();
 
-})(jQuery, window.chromeService);
+})(jQuery, window.chromeService, window.usdValueService);
