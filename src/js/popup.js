@@ -1,7 +1,11 @@
 (function($, chromeService, currencyService){
 
   var _public = {};
-  var alertList, alertListContainer, nowValue, nowVariation, saveButton;
+  var alertList,
+    alertListContainer,
+    currentUSDValueElement,
+    currentUSDValueVariationElement,
+    saveButton;
 
   function init(){
     storeElements();
@@ -12,8 +16,8 @@
 
   function storeElements(){
     saveButton = $('[data-js="button-save"]');
-    nowValue = $('[data-js="now-value"');
-    nowVariation = $('[data-js="now-variation"');
+    currentUSDValueElement = $('[data-js="current-usd-value"');
+    currentUSDValueVariationElement = $('[data-js="current-usd-value-variation"');
     alertListContainer = $('[data-js="alert-list-container"');
     alertList = $('[data-js="alert-list"');
   }
@@ -93,13 +97,13 @@
   }
 
   function setupCurrentUSDValue(value){
-    nowValue.text(value);
+    currentUSDValueElement.text(value);
   }
 
   function setupCurrentUSDVariation(variation) {
-    nowVariation.text(variation).addClass('is-negative');
+    currentUSDValueVariationElement.text(variation).addClass('is-negative');
     if(isPositiveVariation(variation))
-      nowVariation.addClass('is-positive');
+      currentUSDValueVariationElement.addClass('is-positive');
   }
 
   function isPositiveVariation(variation) {
