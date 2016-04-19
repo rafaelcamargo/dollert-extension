@@ -95,7 +95,7 @@ module.exports = function(grunt) {
             pathScripts + 'currency-service.js',
             pathScripts + 'popup.js'
           ],
-          'dist/notifier.min.js': [
+          'dist/background.min.js': [
             pathLibs + 'jquery/dist/jquery.min.js',
             pathScripts + 'chrome-service.js',
             pathScripts + 'currency-service.js',

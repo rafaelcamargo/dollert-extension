@@ -16,8 +16,8 @@
 
   function storeElements(){
     saveButton = $('[data-js="button-save"]');
-    currentUSDValueElement = $('[data-js="current-usd-value"');
-    currentUSDValueVariationElement = $('[data-js="current-usd-value-variation"');
+    currentUSDValueElement = $('[data-js="currency-current-value"');
+    currentUSDValueVariationElement = $('[data-js="currency-current-value-variation"');
     alertListContainer = $('[data-js="alert-list-container"');
     alertList = $('[data-js="alert-list"');
   }
