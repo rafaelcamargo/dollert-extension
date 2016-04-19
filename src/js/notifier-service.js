@@ -1,7 +1,5 @@
 (function($, chromeService, currencyService){
 
-  var USD_VALUE_RESOURCE_URL =  'http://developers.agenciaideias.com.br' +
-                                '/cotacoes/json';
   var DOLLERT_ALARM_ID = 'dollertAlarm';
 
   function init(){
