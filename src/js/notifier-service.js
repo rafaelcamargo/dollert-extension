@@ -1,4 +1,4 @@
-(function($, chromeService, usdValueService){
+(function($, chromeService, currencyService){
 
   var USD_VALUE_RESOURCE_URL =  'http://developers.agenciaideias.com.br' +
                                 '/cotacoes/json';
@@ -44,14 +44,13 @@
   }
 
   function requestUSDExchangeValue(){
-    usdValueService.getCurrentValue()
+    currencyService.getCurrentUSDValue()
       .then(onGetUSDExchangeValueSuccess);
   }
 
   function onGetUSDExchangeValueSuccess(response){
-    var value = response.dolar.cotacao.substring(0,4);
     chromeService.storage.getAlerts().then(function(savedAlerts){
-      checkUSDExchangeValue(savedAlerts, parseFloat(value));
+      checkUSDExchangeValue(savedAlerts, parseFloat(response.currentValue));
     });
   }
 
@@ -82,4 +81,4 @@
 
   init();
 
-})(jQuery, window.chromeService, window.usdValueService);
+})(jQuery, window.chromeService, window.currencyService);

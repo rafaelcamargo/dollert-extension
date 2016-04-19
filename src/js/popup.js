@@ -1,20 +1,25 @@
-(function($, chromeService, usdValueService){
+(function($, chromeService, currencyService){
 
   var _public = {};
-  var alertList, alertListContainer, nowValue, nowVariation;
+  var alertList, alertListContainer, nowValue, nowVariation, saveButton;
 
   function init(){
+    storeElements();
     bindElements();
     getSavedAlerts();
-    getNowValue();
+    getCurrentUSDValue();
+  }
+
+  function storeElements(){
+    saveButton = $('[data-js="button-save"]');
+    nowValue = $('[data-js="now-value"');
+    nowVariation = $('[data-js="now-variation"');
+    alertListContainer = $('[data-js="alert-list-container"');
+    alertList = $('[data-js="alert-list"');
   }
 
   function bindElements(){
-    $('[data-js="button-save"]').on('click', onButtonSaveClick);
-    alertListContainer = $('[data-js="alert-list-container"');
-    alertList = $('[data-js="alert-list"');
-    nowValue = $('[data-js="now-value"');
-    nowVariation = $('[data-js="now-variation"');
+    saveButton.on('click', onButtonSaveClick);
   }
 
   function getSavedAlerts(){
@@ -42,9 +47,9 @@
   }
 
   function addUSDValueToAlertsList(value){
-    var item = $('<li class="alert-list-item"></li>');
-    var deleteText = $('<span class="dollert-delete">Remove</span>');
-    var USDValue = $('<span class="dollert-usd-value"></span>');
+    var item = $('<li class="cp-alert-list-item"></li>');
+    var deleteText = $('<span class="cp-alert-list-item-delete">Remove</span>');
+    var USDValue = $('<span class="cp-alert-list-item-content"></span>');
     item.append(deleteText);
     item.append(USDValue.text(value));
     item.attr('data-usd-value', value).on('click', removeAlert);
@@ -54,38 +59,47 @@
 
   function removeAlert(evt){
     var item = $(evt.currentTarget);
+    removeAlertFromStorage(item);
+    removeAlertFromList(item);
+  }
+
+  function removeAlertFromStorage(item){
     var value = item.attr('data-usd-value');
     chromeService.storage.removeAlert(value);
+  }
+
+  function removeAlertFromList(item){
     item.remove();
-    if(!$('li', alertList).length)
-      alertListContainer.addClass('is-hidden');
+    if(wasLastItemRemoved())
+      hideAlertListContainer();
   }
 
-  function getNowValue() {
-    usdValueService.getCurrentValue()
-      .then(onGetUSDCurrentValueSuccess);
+  function wasLastItemRemoved(){
+    return $('li', alertList).length === 0;
   }
 
-  function onGetUSDCurrentValueSuccess(response){
-    setupUSDCurrentValue(response.dolar.cotacao);
-    setupUSDCurrentValueVariation(response.dolar.variacao);
+  function hideAlertListContainer(){
+    alertListContainer.addClass('is-hidden');
   }
 
-  function setupUSDCurrentValue(dolarValue){
-    var value = dolarValue.substring(0,4);
+  function getCurrentUSDValue() {
+    currencyService.getCurrentUSDValue()
+      .then(onGetCurrentUSDValueSuccess);
+  }
+
+  function onGetCurrentUSDValueSuccess(response){
+    setupCurrentUSDValue(response.currentValue);
+    setupCurrentUSDVariation(response.currentVariation);
+  }
+
+  function setupCurrentUSDValue(value){
     nowValue.text(value);
   }
 
-  function setupUSDCurrentValueVariation(dolarVariation) {
-    var variation = dolarVariation.substring(0,5);
-
-    if(isPositiveVariation(variation)) {
+  function setupCurrentUSDVariation(variation) {
+    nowVariation.text(variation).addClass('is-negative');
+    if(isPositiveVariation(variation))
       nowVariation.addClass('is-positive');
-    } else {
-      nowVariation.addClass('is-negative');
-    }
-
-    nowVariation.text(variation);
   }
 
   function isPositiveVariation(variation) {
@@ -94,4 +108,4 @@
 
   init();
 
-})(jQuery, window.chromeService, window.usdValueService);
+})(jQuery, window.chromeService, window.currencyService);
