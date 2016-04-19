@@ -43,34 +43,34 @@
 
   function requestUSDExchangeValue(){
     currencyService.getCurrentUSDValue()
-      .then(onGetUSDExchangeValueSuccess);
+      .then(onGetCurrentUSDValueSuccess);
   }
 
-  function onGetUSDExchangeValueSuccess(response){
+  function onGetCurrentUSDValueSuccess(response){
     chromeService.storage.getAlerts().then(function(savedAlerts){
-      checkUSDExchangeValue(savedAlerts, parseFloat(response.currentValue));
+      checkCurrentUSDValue(savedAlerts, parseFloat(response.currentValue));
     });
   }
 
-  function checkUSDExchangeValue(savedAlerts, USDCurrentValue){
-    if(dollarMatchesAnySavedAlert(savedAlerts, USDCurrentValue))
-        notifyUser(USDCurrentValue);
+  function checkCurrentUSDValue(savedAlerts, currentUSDValue){
+    if(dollarMatchesAnySavedAlert(savedAlerts, currentUSDValue))
+        notifyUser(currentUSDValue);
   }
 
-  function dollarMatchesAnySavedAlert(savedAlerts, USDCurrentValue){
+  function dollarMatchesAnySavedAlert(savedAlerts, currentUSDValue){
     for (var i = 0; i < savedAlerts.length; i++)
-      if(savedAlerts[i] === USDCurrentValue)
+      if(savedAlerts[i] === currentUSDValue)
         return true;
   }
 
-  function notifyUser(USDCurrentValue){
-    var notification = buildNotification(USDCurrentValue);
+  function notifyUser(currentUSDValue){
+    var notification = buildNotification(currentUSDValue);
     new Notification(notification.title, notification.options);
   }
 
-  function buildNotification(USDCurrentValue){
+  function buildNotification(currentUSDValue){
     return {
-      title: '1 USD = ' + USDCurrentValue + ' BRL',
+      title: '1 USD = ' + currentUSDValue + ' BRL',
       options: {
         icon: 'icon_128x128.png'
       }
