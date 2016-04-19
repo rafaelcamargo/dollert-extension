@@ -1,7 +1,5 @@
-(function($, chromeService, usdValueService){
+(function($, chromeService, currencyService){
 
-  var USD_VALUE_RESOURCE_URL =  'http://developers.agenciaideias.com.br' +
-                                '/cotacoes/json';
   var DOLLERT_ALARM_ID = 'dollertAlarm';
 
   function init(){
@@ -44,36 +42,35 @@
   }
 
   function requestUSDExchangeValue(){
-    usdValueService.getCurrentValue()
-      .then(onGetUSDExchangeValueSuccess);
+    currencyService.getCurrentUSDValue()
+      .then(onGetCurrentUSDValueSuccess);
   }
 
-  function onGetUSDExchangeValueSuccess(response){
-    var value = response.dolar.cotacao.substring(0,4);
+  function onGetCurrentUSDValueSuccess(response){
     chromeService.storage.getAlerts().then(function(savedAlerts){
-      checkUSDExchangeValue(savedAlerts, parseFloat(value));
+      checkCurrentUSDValue(savedAlerts, parseFloat(response.currentValue));
     });
   }
 
-  function checkUSDExchangeValue(savedAlerts, USDCurrentValue){
-    if(dollarMatchesAnySavedAlert(savedAlerts, USDCurrentValue))
-        notifyUser(USDCurrentValue);
+  function checkCurrentUSDValue(savedAlerts, currentUSDValue){
+    if(dollarMatchesAnySavedAlert(savedAlerts, currentUSDValue))
+        notifyUser(currentUSDValue);
   }
 
-  function dollarMatchesAnySavedAlert(savedAlerts, USDCurrentValue){
+  function dollarMatchesAnySavedAlert(savedAlerts, currentUSDValue){
     for (var i = 0; i < savedAlerts.length; i++)
-      if(savedAlerts[i] === USDCurrentValue)
+      if(savedAlerts[i] === currentUSDValue)
         return true;
   }
 
-  function notifyUser(USDCurrentValue){
-    var notification = buildNotification(USDCurrentValue);
+  function notifyUser(currentUSDValue){
+    var notification = buildNotification(currentUSDValue);
     new Notification(notification.title, notification.options);
   }
 
-  function buildNotification(USDCurrentValue){
+  function buildNotification(currentUSDValue){
     return {
-      title: '1 USD = ' + USDCurrentValue + ' BRL',
+      title: '1 USD = ' + currentUSDValue + ' BRL',
       options: {
         icon: 'icon_128x128.png'
       }
@@ -82,4 +79,4 @@
 
   init();
 
-})(jQuery, window.chromeService, window.usdValueService);
+})(jQuery, window.chromeService, window.currencyService);
