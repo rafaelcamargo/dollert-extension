@@ -1,5 +1,10 @@
 (function($, chromeService, currencyService){
 
+  var CURRENCY_VARIATION_CSS_CLASS = {
+    POSITIVE: 'is-positive',
+    NEGATIVE: 'is-negative'
+  };
+
   var _public = {};
   var alertList,
     alertListContainer,
@@ -101,13 +106,26 @@
   }
 
   function setupCurrentUSDVariation(variation) {
-    currentUSDValueVariationElement.text(variation).addClass('is-negative');
+    currentUSDValueVariationElement.text(variation);
+    setCurrentUSDVariationNegativeStyle();
     if(isPositiveVariation(variation))
-      currentUSDValueVariationElement.addClass('is-positive');
+      setCurrentUSDVariationPositiveStyle();
   }
 
   function isPositiveVariation(variation) {
     return parseFloat(variation) >= 0;
+  }
+
+  function setCurrentUSDVariationNegativeStyle() {
+    currentUSDValueVariationElement
+      .removeClass(CURRENCY_VARIATION_CSS_CLASS.POSITIVE)
+      .addClass(CURRENCY_VARIATION_CSS_CLASS.NEGATIVE);
+  }
+
+  function setCurrentUSDVariationPositiveStyle(){
+    currentUSDValueVariationElement
+      .removeClass(CURRENCY_VARIATION_CSS_CLASS.NEGATIVE)
+      .addClass(CURRENCY_VARIATION_CSS_CLASS.POSITIVE);
   }
 
   init();
