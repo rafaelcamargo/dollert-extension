@@ -93,7 +93,14 @@
 
   function getCurrentUSDValue() {
     currencyService.getCurrentUSDValue()
-      .then(onGetCurrentUSDValueSuccess);
+      .then(onGetCurrentUSDValueSuccess)
+      .fail(onGetCurrentUSDValueFail);
+  }
+
+  function onGetCurrentUSDValueFail() {
+    currentUSDValueElement
+      .text('Failed to get current USD value')
+      .addClass('is-failed');
   }
 
   function onGetCurrentUSDValueSuccess(response){
