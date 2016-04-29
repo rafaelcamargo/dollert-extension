@@ -1,0 +1,28 @@
+@import '_variables'
+
+.cp-currency-current-value-container
+  padding-bottom 15px
+  font-size 12px
+  text-align center
+  line-height 20px
+  background $color-white
+  border-bottom 1px solid $color-grey
+  span
+    vertical-align middle
+    margin 0 3px
+
+.cp-currency-current-value-label
+  text-transform uppercase
+
+.cp-currency-current-value
+  font-size 16px;
+  color $color-primary
+  &.is-failed
+    color $color-red
+    font-size 14px;
+
+.cp-currency-current-value-variation
+  &.is-positive
+    color $color-green
+  &.is-negative
+    color $color-red

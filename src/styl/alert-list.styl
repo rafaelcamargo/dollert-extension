@@ -1,16 +1,16 @@
 @import '_variables'
 @import '_mixins'
 
-.dollert-alert-list-cotnainer
+.cp-alert-list-cotnainer
   &.is-hidden
     display none
 
-.dollert-alert-list-title
+.cp-alert-list-title
   margin 25px auto 0
   font-size 12px
   text-align center  
 
-.dollert-alert-list
+.cp-alert-list
   padding 0
   margin 25px
   list-style-type none
@@ -19,7 +19,7 @@
   &.is-hidden
     display none
 
-.alert-list-item
+.cp-alert-list-item
   position relative
   padding 15px 0
   font-size 18px
@@ -28,12 +28,12 @@
   &:not(:first-child)
     border-top 1px solid $color-grey-dark
   &:hover
-    .dollert-delete
+    .cp-alert-list-item-delete
       display inline;
-    .dollert-usd-value
+    .cp-alert-list-item-content
       display none;
 
-.dollert-delete
+.cp-alert-list-item-delete
   display none;
   color $color-red
   text-transform uppercase

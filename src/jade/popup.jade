@@ -1,22 +1,26 @@
 doctype html
-html(class="dollert-popup")
+html.cp-popup
   head
     title Dollert
     link(rel="stylesheet" type="text/css" href="popup.min.css")
 
   body
-    .dollert-alert-form
-      .dollert-logotype-container
+    .cp-alert-form
+      .cp-logotype-container
         img(src="logotype.png")
-      .dollert-alert-form-label Enter the USD value you are looking for in BRL:
-      .dollert-input-buttoned
-        input(data-js="usd-value" placeholder="e.g: 3.70")
+      .cp-alert-form-label Enter the USD value you are looking for in BRL:
+      .cp-input-buttoned
+        input(data-js="usd-value" placeholder="e.g.: 3.70")
         button.is-primary(data-js="button-save" type="button").disabled(disabled) Save
+    .cp-currency-current-value-container
+      span.cp-currency-current-value-label Now
+      span.cp-currency-current-value(data-js="currency-current-value") Loading value...
+      span.cp-currency-current-value-variation(data-js="currency-current-value-variation")
 
-    .dollert-alert-list-cotnainer.is-hidden(data-js="alert-list-container")
-      .dollert-alert-list-title Your Dollerts
-      ul.dollert-alert-list(data-js="alert-list")
-    p.dollert-credits Proudly made by 
+    .cp-alert-list-cotnainer.is-hidden(data-js="alert-list-container")
+      .cp-alert-list-title Your Dollerts
+      ul.cp-alert-list(data-js="alert-list")
+    p.cp-credits Proudly made by 
       a(href="http://rafaelcamargo.com") Rafael Camargo
     
     script(type="text/javascript" src="popup.min.js")
