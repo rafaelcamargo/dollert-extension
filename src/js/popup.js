@@ -10,11 +10,12 @@
     alertListContainer,
     currentUSDValueElement,
     currentUSDValueVariationElement,
+    newUSDValueElement,
     saveButton;
 
   function init(){
     storeElements();
-    bindElements();
+    bindElementsEvents();
     getSavedAlerts();
     getCurrentUSDValue();
   }
@@ -23,13 +24,14 @@
     saveButton = $('[data-js="button-save"]');
     currentUSDValueElement = $('[data-js="currency-current-value"');
     currentUSDValueVariationElement = $('[data-js="currency-current-value-variation"');
+    newUSDValueElement = $('[data-js="usd-value"]');
     alertListContainer = $('[data-js="alert-list-container"');
     alertList = $('[data-js="alert-list"');
   }
 
-  function bindElements(){
+  function bindElementsEvents(){
     saveButton.on('click', onButtonSaveClick);
-    $('[data-js="usd-value"]').on('change paste keyup', onUSDValueChange);
+    newUSDValueElement.on('change paste keyup', onUSDValueChange);
   }
 
   function getSavedAlerts(){
@@ -42,26 +44,29 @@
   }
 
   function onUSDValueChange(){
-    var buttonSave = $('[data-js="button-save"]');
-    var USDEnteredValue = getUSDValueEntered();
-    var invalidUSDValue = isNaN(USDEnteredValue);
-    buttonSave.toggleClass('disabled', invalidUSDValue);
-    buttonSave.prop('disabled', invalidUSDValue);
-    console.log('value = ' + USDEnteredValue + ', it is invalid?=' + invalidUSDValue);
+    var validUSDValue = (getUSDValueEntered() !== false);
+    setSaveButtonEnabled(validUSDValue);
   }
 
   function onButtonSaveClick(){
-    var USDEnteredValue = getUSDValueEntered();
-    addUSDValueToAlertsList(USDEnteredValue);
-    chromeService.storage.addAlert(USDEnteredValue);
+    var enteredUSDValue = getUSDValueEntered();
+    if (enteredUSDValue === false)
+      return;
+    enteredUSDValue = parseFloat(enteredUSDValue);
+    addUSDValueToAlertsList(enteredUSDValue);
+    chromeService.storage.addAlert(enteredUSDValue);
   }
 
   function getUSDValueEntered(){
-    var enteredValue = $('[data-js="usd-value"]').val().replace(',', '.');
-    if (!enteredValue.match(/^[0-9]+(\.[0-9]+)?$/))
-      return NaN;
-    else
-      return parseFloat(enteredValue);
+    var enteredValue = newUSDValueElement.val().replace(',', '.');
+    if (enteredValue.match(/^[0-9]+(\.[0-9]+)?$/))
+      return enteredValue;
+    return false;
+  }
+
+  function setSaveButtonEnabled(enabled){
+    saveButton.toggleClass('disabled', !enabled);
+    saveButton.prop('disabled', !enabled);
   }
 
   function buildAlertList(alerts){
