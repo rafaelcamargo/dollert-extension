@@ -5,7 +5,7 @@ Dollert is a Chrome extension to help people who often need to know what is the 
 
 ## Contribute
 To contribute with this project, do the following:
-- You need to have Nodejs installed. Use `apt-get`, `brew` or get it direct from its (https://nodejs.org/en/)
+- You need to have Nodejs installed. Use `apt-get`, `brew` or get it direct from its website (https://nodejs.org/en/)
 - Fork and clone the project.
 - Go to its directory `cd dollert`
 - Install grunt `npm install -g grunt grunt-cli`
