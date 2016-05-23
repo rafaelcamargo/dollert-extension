@@ -1,6 +1,6 @@
 (function($){
 
-  var RESOURCE_URL =  'http://developers.agenciaideias.com.br/cotacoes/json';
+  var RESOURCE_URL =  'https://economia.awesomeapi.com.br/json/USD-BRL/';
 
   var _public = {};
 
@@ -21,8 +21,8 @@
 
   function parseResponse(response){
     return {
-      currentValue: response.dolar.cotacao.substring(0,4),
-      currentVariation: response.dolar.variacao.substring(0,5) + '%'
+      currentValue: response[0].bid.substring(0,4),
+      currentVariation: response[0].pctChange.substring(0,4) + '%'
     };
   }
 
