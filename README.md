@@ -13,3 +13,7 @@ To contribute with this project, do the following:
 - Build the project and keep watching for your changes `grunt start`
 - Upload `dist` directory as a *develop extension* (https://developer.chrome.com/extensions/getstarted#unpacked)
 - Done!
+
+# Release History
+- 2016/05/23 **0.2.0** Added dollar current value and its variation and changed currency API
+- 2016/04/10 **0.1.0** Initial Release
