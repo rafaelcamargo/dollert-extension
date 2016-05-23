@@ -81,7 +81,7 @@ module.exports = function(grunt) {
       dollert: {
         files : {
           'dist/popup.min.js': pathDist + 'popup.min.js',
-          'dist/notifier.min.js': pathDist + 'notifier.min.js'
+          'dist/background.min.js': pathDist + 'background.min.js'
         }
       }
     },
