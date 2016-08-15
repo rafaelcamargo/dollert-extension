@@ -10,11 +10,12 @@
     alertListContainer,
     currentUSDValueElement,
     currentUSDValueVariationElement,
+    newUSDValueElement,
     saveButton;
 
   function init(){
     storeElements();
-    bindElements();
+    bindElementsEvents();
     getSavedAlerts();
     getCurrentUSDValue();
   }
@@ -23,12 +24,14 @@
     saveButton = $('[data-js="button-save"]');
     currentUSDValueElement = $('[data-js="currency-current-value"');
     currentUSDValueVariationElement = $('[data-js="currency-current-value-variation"');
+    newUSDValueElement = $('[data-js="usd-value"]');
     alertListContainer = $('[data-js="alert-list-container"');
     alertList = $('[data-js="alert-list"');
   }
 
-  function bindElements(){
+  function bindElementsEvents(){
     saveButton.on('click', onButtonSaveClick);
+    newUSDValueElement.on('change paste keyup', onUSDValueChange);
   }
 
   function getSavedAlerts(){
@@ -40,14 +43,30 @@
     });
   }
 
+  function onUSDValueChange(){
+    var validUSDValue = (getUSDValueEntered() !== false);
+    setSaveButtonEnabled(validUSDValue);
+  }
+
   function onButtonSaveClick(){
-    var USDEnteredValue = getUSDValueEntered();
-    addUSDValueToAlertsList(USDEnteredValue);
-    chromeService.storage.addAlert(USDEnteredValue);
+    var enteredUSDValue = getUSDValueEntered();
+    if (enteredUSDValue === false)
+      return;
+    enteredUSDValue = parseFloat(enteredUSDValue);
+    addUSDValueToAlertsList(enteredUSDValue);
+    chromeService.storage.addAlert(enteredUSDValue);
   }
 
   function getUSDValueEntered(){
-    return parseFloat($('[data-js="usd-value"]').val().replace(',','.'));
+    var enteredValue = newUSDValueElement.val().replace(',', '.');
+    if (enteredValue.match(/^[0-9]+(\.[0-9]+)?$/))
+      return enteredValue;
+    return false;
+  }
+
+  function setSaveButtonEnabled(enabled){
+    saveButton.toggleClass('disabled', !enabled);
+    saveButton.prop('disabled', !enabled);
   }
 
   function buildAlertList(alerts){
