@@ -1,7 +1,9 @@
 # Dollert
 Get notified when dollar reaches the price you're looking for
 
-Dollert is a [Chrome extension](https://chrome.google.com/webstore/detail/dollert/lkbhlmhaiggihoihajncjlnmbpigbkam) to help people who often need to know the current price of USD in BRL. So, the solution was create a little application that accepts expected prices for USD and, in case, USD price to reach the expected price in BRL, a desktop notification is fired.
+[![Code Climate](https://codeclimate.com/github/rafaelcamargo/dollert/badges/gpa.svg)](https://codeclimate.com/github/rafaelcamargo/dollert) [![Test Coverage](https://codeclimate.com/github/rafaelcamargo/dollert/badges/coverage.svg)](https://codeclimate.com/github/rafaelcamargo/dollert/coverage) [![Build Status](https://travis-ci.org/rafaelcamargo/dollert.svg?branch=master)](https://travis-ci.org/rafaelcamargo/dollert)
+
+Dollert is a [Chrome extension](https://chrome.google.com/webstore/detail/dollert/lkbhlmhaiggihoihajncjlnmbpigbkam) to help people who often need to know the current price of USD in BRL. So, the solution was create a little application that accepts expected prices for USD and, in case of USD price to reach the expected price in BRL, a desktop notification is fired.
 
 ## Contribute
 To contribute with this project, do the following:
@@ -14,6 +16,6 @@ To contribute with this project, do the following:
 - Upload `dist` directory as a *develop extension* (https://developer.chrome.com/extensions/getstarted#unpacked)
 - Done!
 
-# Release History
+## Release History
 - 2016/05/23 **0.2.0** Added dollar current value and its variation and changed currency API
 - 2016/04/10 **0.1.0** Initial Release
