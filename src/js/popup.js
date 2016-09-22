@@ -137,4 +137,4 @@
 
   init();
 
-})(jQuery, window.chromeService, window.currencyService);
+}(jQuery, window.chromeService, window.currencyService));

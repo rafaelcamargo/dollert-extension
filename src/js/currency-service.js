@@ -28,4 +28,4 @@
 
   window.currencyService = _public;
 
-})(jQuery);
+}(jQuery));
