@@ -84,7 +84,7 @@
       chrome.storage.onChanged.addListener(callback);
     }
   };
-  
+
   window.chromeService = _public;
 
-})();
+}());
