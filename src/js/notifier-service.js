@@ -53,14 +53,8 @@
   }
 
   function checkCurrentUSDValue(savedAlerts, currentUSDValue){
-    if(dollarMatchesAnySavedAlert(savedAlerts, currentUSDValue))
-        notifyUser(currentUSDValue);
-  }
-
-  function dollarMatchesAnySavedAlert(savedAlerts, currentUSDValue){
-    for (var i = 0; i < savedAlerts.length; i++)
-      if(savedAlerts[i] === currentUSDValue)
-        return true;
+    if(chromeService.storage.isAlertAlreadySaved(savedAlerts, currentUSDValue))
+      notifyUser(currentUSDValue);
   }
 
   function notifyUser(currentUSDValue){
