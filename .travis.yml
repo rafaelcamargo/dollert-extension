@@ -1,0 +1,14 @@
+language: node_js
+
+node_js:
+  - 4.5.0
+
+install:
+  - npm install -g karma karma-cli grunt-cli codeclimate-test-reporter
+  - npm install
+
+script:
+  - grunt build
+
+after_script:
+  - CODECLIMATE_REPO_TOKEN=10423e632b192e825550aa1429e8b49ad48cdfaa8bc03b3ee32833467ccffb46 codeclimate-test-reporter < ./coverage/report-lcov/lcov.info
