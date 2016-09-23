@@ -69,6 +69,6 @@ describe('Currency Service', function(){
     });
 
     expect(errorMessage).toEqual(CURRENT_USD_VALUE_ERROR_RESPONSE);
-  })
+  });
 
 });
