@@ -105,7 +105,8 @@ var config = {
 
   jshint: {
     conf: configFiles,
-    dist: scriptFiles
+    dist: scriptFiles,
+    spec: specFiles
   },
 
   karma: {
