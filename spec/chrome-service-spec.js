@@ -93,4 +93,26 @@ describe('Chrome Service', function(){
     expect(blankReturn).toEqual(undefined);
   });
 
+  it('should provide an interface to storage api', function(){
+    expect(chromeService.storage).toBeDefined();
+  });
+
+  it('should get an item from storage', function(){
+    var item = {value: '36'};
+    var callback = function(){};
+    spyOn(chromeService.storage, 'handleStorage');
+
+    chromeService.storage.get(item, callback);
+    expect(chromeService.storage.handleStorage).toHaveBeenCalledWith('get', item, callback);
+  });
+
+  it('should set an item to storage', function(){
+    var item = {value: '36'};
+    var callback = function(){};
+    spyOn(chromeService.storage, 'handleStorage');
+
+    chromeService.storage.set(item, callback);
+    expect(chromeService.storage.handleStorage).toHaveBeenCalledWith('set', item, callback);
+  });
+
 });
