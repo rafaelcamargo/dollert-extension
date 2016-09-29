@@ -115,4 +115,23 @@ describe('Chrome Service', function(){
     expect(chromeService.storage.handleStorage).toHaveBeenCalledWith('set', item, callback);
   });
 
+  it('should remove an item from storage', function(){
+    var item = {value: '36'};
+    var callback = function(){};
+    spyOn(chromeService.storage, 'handleStorage');
+
+    chromeService.storage.remove(item, callback);
+    expect(chromeService.storage.handleStorage).toHaveBeenCalledWith('remove', item, callback);
+  });
+
+  it('should answer if an alert was already saved', function(){
+    var previousValues = [3.2,3.5,3.6];
+    var currentValue = 3.5;
+
+    expect(chromeService.storage.isAlertAlreadySaved(previousValues, currentValue)).toBeTruthy();
+
+    currentValue = 3.7;
+    expect(chromeService.storage.isAlertAlreadySaved(previousValues, currentValue)).toBeFalsy();
+  });
+
 });
