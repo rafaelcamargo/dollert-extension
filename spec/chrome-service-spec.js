@@ -115,6 +115,17 @@ describe('Chrome Service', function(){
     expect(chromeService.storage.handleStorage).toHaveBeenCalledWith('set', item, callback);
   });
 
+  it('should call some storage sync method with a placeholder callback if none is provided', function(){
+    chrome.storage.sync.set = function(item, callback){
+      callback();
+    };
+    spyOn(chrome.storage.sync, 'set').and.callThrough();
+    var item = {dollerts: [3.60]};
+
+    chromeService.storage.handleStorage('set', item);
+    expect(chrome.storage.sync.set).toHaveBeenCalledWith(item, jasmine.any(Function));
+  });
+
   it('should remove an item from storage', function(){
     var item = {value: '36'};
     var callback = function(){};
@@ -132,6 +143,34 @@ describe('Chrome Service', function(){
 
     currentValue = 3.7;
     expect(chromeService.storage.isAlertAlreadySaved(previousValues, currentValue)).toBeFalsy();
+  });
+
+  it('should add an alert when it is not already stored', function(){
+    spyOn(chromeService.storage, 'set');
+    chromeService.storage.get = function(item, callback){
+      callback({
+        dollerts: []
+      });
+    };
+
+    chromeService.storage.addAlert(3.35);
+    expect(chromeService.storage.set).toHaveBeenCalledWith({
+      dollerts: [3.35]
+    });
+  });
+
+  it('should note add an alert when it is already stored', function(){
+    spyOn(chromeService.storage, 'set');
+    chromeService.storage.get = function(item, callback){
+      callback({
+        dollerts: [3.60]
+      });
+    };
+
+    chromeService.storage.addAlert(3.60);
+    expect(chromeService.storage.set).toHaveBeenCalledWith({
+      dollerts: [3.60]
+    });
   });
 
 });
