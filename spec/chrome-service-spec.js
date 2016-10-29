@@ -148,9 +148,7 @@ describe('Chrome Service', function(){
   it('should add an alert when it is not already stored', function(){
     spyOn(chromeService.storage, 'set');
     chromeService.storage.get = function(item, callback){
-      callback({
-        dollerts: []
-      });
+      callback();
     };
 
     chromeService.storage.addAlert(3.35);
@@ -171,6 +169,48 @@ describe('Chrome Service', function(){
     expect(chromeService.storage.set).toHaveBeenCalledWith({
       dollerts: [3.60]
     });
+  });
+
+  it('should remove an alert keeping with the existing ones', function(){
+    spyOn(chromeService.storage, 'set');
+    chromeService.storage.get = function(item, callback){
+      callback({
+        dollerts: [3.60, 3.25, 3.30]
+      });
+    };
+
+    chromeService.storage.removeAlert(3.25);
+    expect(chromeService.storage.set).toHaveBeenCalledWith({
+      dollerts: [3.60, 3.30]
+    });
+  });
+
+  it('should clear storage when removing last alert', function(){
+    var storageKey = chromeService.storage.defaultKey;
+    spyOn(chromeService.storage, 'remove');
+    chromeService.storage.get = function(item, callback){
+      callback({
+        dollerts: [3.60]
+      });
+    };
+
+    chromeService.storage.removeAlert(3.60);
+    expect(chromeService.storage.remove).toHaveBeenCalledWith(storageKey);
+  });
+
+  it('should get existing alerts', function(){
+    var existingAlerts;
+    chromeService.storage.get = function(item, callback){
+      callback({
+        dollerts: [3.60, 3.40, 3.15]
+      });
+    };
+
+    chromeService.storage.getAlerts().then(function(alerts){
+      existingAlerts = alerts;
+    });
+
+    expect(existingAlerts).toEqual([3.60, 3.40, 3.15]);
   });
 
 });
