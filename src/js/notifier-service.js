@@ -2,10 +2,12 @@
 
   var DOLLERT_ALARM_ID = 'dollertAlarm';
 
-  function init(){
+  var _public = {};
+
+  _public.init = function(){
     setListeners();
     checkSavedAlerts();
-  }
+  };
 
   function setListeners(){
     chromeService.alarms.addListener(requestUSDExchangeValue);
@@ -71,6 +73,8 @@
     };
   }
 
-  init();
+  _public.init();
+
+  window.notifierService = _public;
 
 }(jQuery, window.chromeService, window.currencyService));
