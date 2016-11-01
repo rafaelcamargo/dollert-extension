@@ -30,4 +30,14 @@ describe('Notifier Service', function(){
     expect(currencyService.getCurrentUSDValue).toHaveBeenCalled();
   });
 
+  it('should clear schedule on module initialisation when there is no alert stored', function(){
+    spyOn(chromeService.alarms, 'clear');
+    chromeService.storage.onChanged = function(callback){
+      callback({});
+    };
+
+    notifierService.init();
+    expect(chromeService.alarms.clear).toHaveBeenCalledWith('dollertAlarm');
+  });
+
 });
