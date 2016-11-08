@@ -10,8 +10,8 @@ describe('Notifier Service', function(){
           then: function(callback){
             callback(resolvedResponse);
           }
-        }
-      }
+        };
+      };
     };
 
     stubAlarmsGet = function(resolvedResponse){
@@ -20,9 +20,9 @@ describe('Notifier Service', function(){
           then: function(callback){
             callback(resolvedResponse);
           }
-        }
-      }
-    }
+        };
+      };
+    };
   });
 
   it('should set listeners on module initialisation', function(){
