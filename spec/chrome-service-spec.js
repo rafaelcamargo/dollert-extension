@@ -213,4 +213,14 @@ describe('Chrome Service', function(){
     expect(existingAlerts).toEqual([3.60, 3.40, 3.15]);
   });
 
+  it('should show notification from a USD value', function(){
+    window.Notification = function(title, options){};
+    spyOn(window, 'Notification');
+
+    chromeService.notification.show(3.65);
+    expect(Notification).toHaveBeenCalledWith('1 USD = 3.65 BRL', {
+      icon: 'icon_128x128.png'
+    });
+  });
+
 });

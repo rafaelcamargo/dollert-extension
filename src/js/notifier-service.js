@@ -60,17 +60,7 @@
   }
 
   function notifyUser(currentUSDValue){
-    var notification = buildNotification(currentUSDValue);
-    new Notification(notification.title, notification.options);
-  }
-
-  function buildNotification(currentUSDValue){
-    return {
-      title: '1 USD = ' + currentUSDValue + ' BRL',
-      options: {
-        icon: 'icon_128x128.png'
-      }
-    };
+    chromeService.notification.show(currentUSDValue);
   }
 
   _public.init();

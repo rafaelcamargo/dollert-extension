@@ -85,6 +85,21 @@
     }
   };
 
+  _public.notification = {
+    show: function(currentUSDValue){
+      var details = this.build(currentUSDValue);
+      return new Notification(details.title, details.options);
+    },
+    build: function(currentUSDValue){
+      return {
+        title: '1 USD = ' + currentUSDValue + ' BRL',
+        options: {
+          icon: 'icon_128x128.png'
+        }
+      };
+    }
+  };
+
   window.chromeService = _public;
 
 }());
