@@ -72,13 +72,13 @@
   }
 
   function addUSDValueToAlertsList(value){
-    var item = $('<li class="cp-alert-list-item"></li>');
-    var deleteTrigger = $('<span class="cp-alert-list-item-delete">Remove</span>');
-    var USDValue = $('<span class="cp-alert-list-item-content"></span>');
-    item.append(deleteTrigger);
-    item.append(USDValue.text(value));
-    item.attr('data-alert-value', value).on('click', removeAlert);
-    alertListElement.append(item);
+    var itemElement = $('<li class="cp-alert-list-item"></li>');
+    var deleteTriggerElement = $('<span class="cp-alert-list-item-delete">Remove</span>');
+    var itemValueElement = $('<span class="cp-alert-list-item-content"></span>');
+    itemElement.append(deleteTriggerElement);
+    itemElement.append(itemValueElement.text(value));
+    itemElement.attr('data-alert-value', value).on('click', removeAlert);
+    alertListElement.append(itemElement);
     alertListContainerElement.removeClass('is-hidden');
   }
 
