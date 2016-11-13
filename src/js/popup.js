@@ -31,6 +31,10 @@
     getCurrentUSDValue();
   };
 
+  function neverCalled(){
+
+  }
+
   function storeElements(){
     alertListElement = $('[data-js="alert-list"]');
     alertValueInputElement = $('[data-js="alert-value"]');
