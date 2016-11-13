@@ -10,17 +10,17 @@ html.cp-popup
         img(src="logotype.png")
       .cp-alert-form-label Enter the USD value you are looking for in BRL:
       .cp-input-buttoned
-        input(data-js="usd-value" placeholder="e.g.: 3.70")
+        input(data-js="alert-value" placeholder="e.g.: 3.70")
         button.is-primary(data-js="button-save" type="button") Save
     .cp-currency-current-value-container
       span.cp-currency-current-value-label Now
-      span.cp-currency-current-value(data-js="currency-current-value") Loading value...
+      span.cp-currency-current-value(data-js="currency-current-value")
       span.cp-currency-current-value-variation(data-js="currency-current-value-variation")
 
     .cp-alert-list-cotnainer.is-hidden(data-js="alert-list-container")
       .cp-alert-list-title Your Dollerts
       ul.cp-alert-list(data-js="alert-list")
-    p.cp-credits Proudly made by 
-      a(href="http://rafaelcamargo.com") Rafael Camargo
-    
+    p.cp-credits Proudly made by
+      span(class="cp-link" data-js="link-credit") Rafael Camargo
+
     script(type="text/javascript" src="popup.min.js")

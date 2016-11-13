@@ -1,34 +1,49 @@
 (function($, chromeService, currencyService){
 
-  var CURRENCY_VARIATION_CSS_CLASS = {
-    POSITIVE: 'is-positive',
-    NEGATIVE: 'is-negative'
+  var CURRENT_USD_VALUE = {
+    LOADER_MESSAGE: 'Loading value...',
+    VARIATION: {
+      CSS_CLASS: {
+        POSITIVE: 'is-positive',
+        NEGATIVE: 'is-negative'
+      }
+    },
+    FAIL: {
+      MESSAGE: 'Failed to get current USD value',
+      CSS_CLASS: 'is-failed'
+    }
   };
 
-  var _public = {};
-  var alertList,
-    alertListContainer,
+  var AUTHOR_WEBSITE_URL = 'https://www.rafaelcamargo.com';
+
+  var _public = {},
+    alertListElement,
+    alertValueInputElement,
+    alertListContainerElement,
     currentUSDValueElement,
     currentUSDValueVariationElement,
-    saveButton;
+    saveButtonElement;
 
-  function init(){
+  _public.init = function(){
     storeElements();
     bindElements();
     getSavedAlerts();
     getCurrentUSDValue();
-  }
+  };
 
   function storeElements(){
-    saveButton = $('[data-js="button-save"]');
+    alertListElement = $('[data-js="alert-list"]');
+    alertValueInputElement = $('[data-js="alert-value"]');
+    alertListContainerElement = $('[data-js="alert-list-container"]');
     currentUSDValueElement = $('[data-js="currency-current-value"]');
     currentUSDValueVariationElement = $('[data-js="currency-current-value-variation"]');
-    alertListContainer = $('[data-js="alert-list-container"]');
-    alertList = $('[data-js="alert-list"]');
+    saveButtonElement = $('[data-js="button-save"]');
+    creditLinkElement = $('[data-js="link-credit"]');
   }
 
   function bindElements(){
-    saveButton.on('click', onButtonSaveClick);
+    saveButtonElement.on('click', onButtonSaveClick);
+    creditLinkElement.on('click', openAuthorWebsite);
   }
 
   function getSavedAlerts(){
@@ -36,7 +51,7 @@
       if(alerts.length)
         buildAlertList(alerts);
       else
-        alertListContainer.addClass('is-hidden');
+        alertListContainerElement.addClass('is-hidden');
     });
   }
 
@@ -47,7 +62,8 @@
   }
 
   function getUSDValueEntered(){
-    return parseFloat($('[data-js="usd-value"]').val().replace(',','.'));
+    var value = alertValueInputElement.val().replace(',','.');
+    return parseFloat(value);
   }
 
   function buildAlertList(alerts){
@@ -57,13 +73,13 @@
 
   function addUSDValueToAlertsList(value){
     var item = $('<li class="cp-alert-list-item"></li>');
-    var deleteText = $('<span class="cp-alert-list-item-delete">Remove</span>');
+    var deleteTrigger = $('<span class="cp-alert-list-item-delete">Remove</span>');
     var USDValue = $('<span class="cp-alert-list-item-content"></span>');
-    item.append(deleteText);
+    item.append(deleteTrigger);
     item.append(USDValue.text(value));
-    item.attr('data-usd-value', value).on('click', removeAlert);
-    alertList.append(item);
-    alertListContainer.removeClass('is-hidden');
+    item.attr('data-alert-value', value).on('click', removeAlert);
+    alertListElement.append(item);
+    alertListContainerElement.removeClass('is-hidden');
   }
 
   function removeAlert(evt){
@@ -73,34 +89,33 @@
   }
 
   function removeAlertFromStorage(item){
-    var value = item.attr('data-usd-value');
+    var value = item.attr('data-alert-value');
     chromeService.storage.removeAlert(value);
   }
 
   function removeAlertFromList(item){
     item.remove();
     if(wasLastItemRemoved())
-      hideAlertListContainer();
+      hideAlertListContainerElement();
   }
 
   function wasLastItemRemoved(){
-    return $('li', alertList).length === 0;
+    return $('li', alertListElement).length === 0;
   }
 
-  function hideAlertListContainer(){
-    alertListContainer.addClass('is-hidden');
+  function hideAlertListContainerElement(){
+    alertListContainerElement.addClass('is-hidden');
   }
 
   function getCurrentUSDValue() {
+    setCurrentUSDValueLoaderMessage();
     currencyService.getCurrentUSDValue()
       .then(onGetCurrentUSDValueSuccess)
       .fail(onGetCurrentUSDValueFail);
   }
 
-  function onGetCurrentUSDValueFail() {
-    currentUSDValueElement
-      .text('Failed to get current USD value')
-      .addClass('is-failed');
+  function setCurrentUSDValueLoaderMessage(){
+    currentUSDValueElement.text(CURRENT_USD_VALUE.LOADER_MESSAGE);
   }
 
   function onGetCurrentUSDValueSuccess(response){
@@ -125,16 +140,28 @@
 
   function setCurrentUSDVariationNegativeStyle() {
     currentUSDValueVariationElement
-      .removeClass(CURRENCY_VARIATION_CSS_CLASS.POSITIVE)
-      .addClass(CURRENCY_VARIATION_CSS_CLASS.NEGATIVE);
+      .removeClass(CURRENT_USD_VALUE.VARIATION.CSS_CLASS.POSITIVE)
+      .addClass(CURRENT_USD_VALUE.VARIATION.CSS_CLASS.NEGATIVE);
   }
 
   function setCurrentUSDVariationPositiveStyle(){
     currentUSDValueVariationElement
-      .removeClass(CURRENCY_VARIATION_CSS_CLASS.NEGATIVE)
-      .addClass(CURRENCY_VARIATION_CSS_CLASS.POSITIVE);
+      .removeClass(CURRENT_USD_VALUE.VARIATION.CSS_CLASS.NEGATIVE)
+      .addClass(CURRENT_USD_VALUE.VARIATION.CSS_CLASS.POSITIVE);
   }
 
-  init();
+  function onGetCurrentUSDValueFail() {
+    currentUSDValueElement
+      .text(CURRENT_USD_VALUE.FAIL.MESSAGE)
+      .addClass(CURRENT_USD_VALUE.FAIL.CSS_CLASS);
+  }
+
+  function openAuthorWebsite(){
+    window.open(AUTHOR_WEBSITE_URL, '_blank');
+  }
+
+  window.popup = _public;
+
+  document.addEventListener('DOMContentLoaded', _public.init);
 
 }(jQuery, window.chromeService, window.currencyService));

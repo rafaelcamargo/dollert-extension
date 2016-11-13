@@ -10,6 +10,10 @@ describe('Chrome Service', function(){
     spyOn(chrome.alarms, 'clear');
   });
 
+  afterEach(function(){
+    window.chrome = new ChromeApiMock();
+  });
+
   it('should provide an interface to alarms api', function(){
     expect(chromeService.alarms).toBeDefined();
   });

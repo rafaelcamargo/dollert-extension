@@ -18,6 +18,18 @@ describe('Currency Service', function(){
   }];
   var CURRENT_USD_VALUE_ERROR_RESPONSE = 'failed to get current USD value';
 
+  var rawFunctions;
+
+  beforeEach(function(){
+    rawFunctions = {
+      jquery: window.$
+    };
+  });
+
+  afterEach(function(){
+    window.$ = rawFunctions.jquery;
+  });
+
   it('should request current USD value', function(){
     spyOn($, 'ajax');
     currencyService.getCurrentUSDValue();
