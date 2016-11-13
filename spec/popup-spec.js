@@ -82,19 +82,19 @@ describe('Popup', function(){
     expect(alertListContainerElement.hasClass('is-hidden')).toEqual(false);
   });
 
-  it('should added alert have a self remove trigger label', function(){
+  it('should add an alert containing a self remove trigger label', function(){
     init();
     insertAlert('3,55');
     expect($('span', getAlertListItems()[0])[0].innerHTML).toEqual('Remove');
   });
 
-  it('should added alert have a custom attribute containing alert value', function(){
+  it('should add an alert containing a custom attribute for alert value', function(){
     init();
     insertAlert('3,23');
     expect($(getAlertListItems()[0]).attr('data-alert-value')).toEqual('3.23');
   });
 
-  it('should added alert have alert value as text', function(){
+  it('should add an alert containing the alert value as text', function(){
     init();
     insertAlert('3,35');
     expect($('span', getAlertListItems()[0])[1].innerHTML).toEqual('3.35');
@@ -160,7 +160,7 @@ describe('Popup', function(){
     expect(currentUSDValueVariationElement.hasClass('is-negative')).toEqual(true);
   });
 
-  it('should add previously saved alerts on alert list on initialisation', function(){
+  it('should add previously saved alerts into alert list on initialisation', function(){
     var promise = $.Deferred();
     spyOn(chromeService.storage, 'getAlerts').and.returnValue(promise);
 
