@@ -97,7 +97,7 @@ describe('Popup', function(){
   it('should add an alert containing the alert value as text', function(){
     init();
     insertAlert('3,3');
-    expect($('span', getAlertListItems()[0])[1].innerHTML).toEqual('3.3');
+    expect($('span', getAlertListItems()[0])[1].innerHTML).toEqual('3.30');
   });
 
   it('should remove an existing alert', function(){

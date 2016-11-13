@@ -92,7 +92,7 @@
     var deleteTriggerElement = $('<span class="cp-alert-list-item-delete">Remove</span>');
     var itemValueElement = $('<span class="cp-alert-list-item-content"></span>');
     itemElement.append(deleteTriggerElement);
-    itemElement.append(itemValueElement.text(value));
+    itemElement.append(itemValueElement.text(value.toFixed(2)));
     itemElement.attr('data-alert-value', value).on('click', removeAlert);
     alertListElement.append(itemElement);
     alertListContainerElement.removeClass('is-hidden');
