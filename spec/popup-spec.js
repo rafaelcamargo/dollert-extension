@@ -34,7 +34,7 @@ describe('Popup', function(){
     linkCreditElement = $('[data-js="link-credit"]');
 
     insertAlert = function(alertValue){
-      alertValueInputElement.val(alertValue);
+      alertValueInputElement.val(alertValue).trigger('change');
       saveButtonElement.trigger('click');
     };
 
@@ -96,8 +96,8 @@ describe('Popup', function(){
 
   it('should add an alert containing the alert value as text', function(){
     init();
-    insertAlert('3,35');
-    expect($('span', getAlertListItems()[0])[1].innerHTML).toEqual('3.35');
+    insertAlert('3,3');
+    expect($('span', getAlertListItems()[0])[1].innerHTML).toEqual('3.3');
   });
 
   it('should remove an existing alert', function(){
@@ -176,6 +176,25 @@ describe('Popup', function(){
     init();
     linkCreditElement.trigger('click');
     expect(window.open).toHaveBeenCalledWith('https://www.rafaelcamargo.com', '_blank');
+  });
+
+  it('should show save button disabled on initialisation', function(){
+    init();
+    expect(saveButtonElement.hasClass('is-disabled')).toEqual(true);
+  });
+
+  it('should keep save button disabled when invalid values are entered', function(){
+    init();
+    insertAlert('asd');
+    expect(saveButtonElement.hasClass('is-disabled')).toEqual(true);
+    insertAlert('!@#$');
+    expect(saveButtonElement.hasClass('is-disabled')).toEqual(true);
+  });
+
+  it('should enable save button when a valid value is entered', function(){
+    init();
+    insertAlert('3,05');
+    expect(saveButtonElement.hasClass('is-disabled')).toEqual(false);
   });
 
 });
