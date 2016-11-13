@@ -31,7 +31,8 @@ module.exports = function(config) {
       'karma-jasmine',
       'karma-phantomjs-launcher',
       'karma-chrome-launcher',
-      'karma-coverage'
+      'karma-coverage',
+      'karma-threshold-reporter'
     ],
 
 
@@ -44,7 +45,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress', 'coverage', 'threshold'],
 
 
     coverageReporter: {
@@ -55,6 +56,13 @@ module.exports = function(config) {
             { type: 'text', subdir: '.' }
         ]
 
+    },
+
+    thresholdReporter: {
+      statements: 100,
+      branches: 100,
+      functions: 100,
+      lines: 100
     },
 
 
