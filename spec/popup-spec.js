@@ -9,6 +9,7 @@ describe('Popup', function(){
     saveButtonElement,
     linkCreditElement,
     insertAlert,
+    buildInsertAlertEvent,
     getAlertListItems,
     stubCurrentUSDValueRequestReturn,
     mockCurrentUSDValueReponse,
@@ -33,9 +34,19 @@ describe('Popup', function(){
     saveButtonElement = $('[data-js="button-save"]');
     linkCreditElement = $('[data-js="link-credit"]');
 
-    insertAlert = function(alertValue){
-      alertValueInputElement.val(alertValue).trigger('change');
-      saveButtonElement.trigger('click');
+    insertAlert = function(alertValue, eventType, shouldSimulateEnterKey, avoidSaveButtonClick){
+      eventType = eventType || 'change';
+      var evt = buildInsertAlertEvent(eventType, shouldSimulateEnterKey);
+      alertValueInputElement.val(alertValue).trigger(evt);
+      if(!avoidSaveButtonClick)
+        saveButtonElement.trigger('click');
+    };
+
+    buildInsertAlertEvent = function(eventType, shouldSimulateEnterKey){
+      var evt = $.Event(eventType);
+      if(shouldSimulateEnterKey)
+        evt.keyCode = 13;
+      return evt;
     };
 
     getAlertListItems = function(){
@@ -74,6 +85,27 @@ describe('Popup', function(){
     insertAlert('3,45');
     expect(getAlertListItems().length).toEqual(2);
     expect(chromeService.storage.addAlert).toHaveBeenCalledWith(3.45);
+  });
+
+  it('should add alert when pressing enter after valid value entered', function(){
+    init();
+    insertAlert('3,05', 'keypress', true, true);
+    expect(saveButtonElement.hasClass('is-disabled')).toEqual(true);
+    expect(getAlertListItems().length).toEqual(1);
+  });
+
+  it('should not add alert when pressing enter after invalid value entered', function(){
+    init();
+    insertAlert('asd', 'keypress', true, true);
+    expect(saveButtonElement.hasClass('is-disabled')).toEqual(true);
+    expect(getAlertListItems().length).toEqual(0);
+  });
+
+  it('should not add alert when pressing key other than enter while entering value', function(){
+    init();
+    insertAlert('3,05', 'keypress', false, true);
+    expect(saveButtonElement.hasClass('is-disabled')).toEqual(false);
+    expect(getAlertListItems().length).toEqual(0);
   });
 
   it('should show alert list container when some alert is inserted', function(){

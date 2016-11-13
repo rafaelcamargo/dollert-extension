@@ -20,6 +20,8 @@
     }
   };
 
+  var ENTER_KEY_CODE = 13;
+
   var AUTHOR_WEBSITE_URL = 'https://www.rafaelcamargo.com';
 
   var _public = {},
@@ -59,7 +61,8 @@
   function bindElements(){
     saveButtonElement.on('click', onButtonSaveClick);
     creditLinkElement.on('click', openAuthorWebsite);
-    alertValueInputElement.on('keyup change mouseenter mouseleave', onAlertValueInputChange);
+    alertValueInputElement.on('keyup keypress change mouseenter mouseleave', onAlertValueInputChange);
+    alertValueInputElement.on('keypress', onAlertValueInputKeypress);
   }
 
   function getSavedAlerts(){
@@ -73,6 +76,10 @@
 
   function onButtonSaveClick(){
     var USDEnteredValue = getAlertValueEntered();
+    addEnteredAlertValue(USDEnteredValue);
+  }
+
+  function addEnteredAlertValue(USDEnteredValue){
     addUSDValueToAlertsList(USDEnteredValue);
     chromeService.storage.addAlert(USDEnteredValue);
   }
@@ -179,6 +186,22 @@
       enableSaveButton();
     else
       disableSaveButton();
+  }
+
+  function onAlertValueInputKeypress(evt){
+    if(evt.keyCode === ENTER_KEY_CODE)
+      onAlertValueInputEnterPressed();
+  }
+
+  function onAlertValueInputEnterPressed(){
+    var value = getAlertValueEntered();
+    if(value)
+      addEnteredAlertValue(value);
+    resetAlertValueInputElement();
+  }
+
+  function resetAlertValueInputElement(){
+    alertValueInputElement.val('').trigger('change');
   }
 
   window.popup = _public;
