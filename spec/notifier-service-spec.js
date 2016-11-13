@@ -1,9 +1,15 @@
 describe('Notifier Service', function(){
 
   var stubStorageGetAlerts,
-    stubAlarmsGet;
+    stubAlarmsGet,
+    rawFunctions;
 
   beforeEach(function(){
+    rawFunctions = {
+      chromeServiceStorageGetAlerts: chromeService.storage.getAlerts,
+      chromeServiceAlarmsGet: chromeService.alarms.get
+    };
+
     stubStorageGetAlerts = function(resolvedResponse){
       chromeService.storage.getAlerts = function(){
         return {
@@ -23,6 +29,11 @@ describe('Notifier Service', function(){
         };
       };
     };
+  });
+
+  afterEach(function(){
+    chromeService.storage.getAlerts = rawFunctions.chromeServiceStorageGetAlerts;
+    chromeService.alarms.get = rawFunctions.chromeServiceAlarmsGet;
   });
 
   it('should set listeners on module initialisation', function(){
