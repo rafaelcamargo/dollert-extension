@@ -128,26 +128,23 @@
   }
 
   function setupCurrentUSDVariation(variation) {
+    var variationType = isPositiveVariation(variation) ? 'positive' : 'negative';
     currentUSDValueVariationElement.text(variation);
-    setCurrentUSDVariationNegativeStyle();
-    if(isPositiveVariation(variation))
-      setCurrentUSDVariationPositiveStyle();
+    setCurrentUSDVariationStyle(variationType);
   }
 
   function isPositiveVariation(variation) {
     return parseFloat(variation) >= 0;
   }
 
-  function setCurrentUSDVariationNegativeStyle() {
+  function setCurrentUSDVariationStyle(variationType){
+    var availableCssClasses = CURRENT_USD_VALUE.VARIATION.CSS_CLASS;
     currentUSDValueVariationElement
-      .removeClass(CURRENT_USD_VALUE.VARIATION.CSS_CLASS.POSITIVE)
-      .addClass(CURRENT_USD_VALUE.VARIATION.CSS_CLASS.NEGATIVE);
-  }
-
-  function setCurrentUSDVariationPositiveStyle(){
-    currentUSDValueVariationElement
-      .removeClass(CURRENT_USD_VALUE.VARIATION.CSS_CLASS.NEGATIVE)
-      .addClass(CURRENT_USD_VALUE.VARIATION.CSS_CLASS.POSITIVE);
+      .removeClass([availableCssClasses.POSITIVE, availableCssClasses.NEGATIVE].join(' '));
+    if(variationType == 'positive')
+      currentUSDValueVariationElement.addClass(CURRENT_USD_VALUE.VARIATION.CSS_CLASS.POSITIVE);
+    else
+      currentUSDValueVariationElement.addClass(CURRENT_USD_VALUE.VARIATION.CSS_CLASS.NEGATIVE);
   }
 
   function onGetCurrentUSDValueFail() {
