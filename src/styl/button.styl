@@ -1,0 +1,26 @@
+@require '_variables'
+
+.cp-button-disabled-default
+  background-color $color-grey
+  color $color-grey-dark
+  border 1px solid $color-grey
+  cursor not-allowed
+
+.cp-button-disabled
+  @extend .cp-button-disabled-default
+  &:hover,
+  &:active,
+  &:focus
+    @extend .cp-button-disabled-default
+
+.cp-button
+  &.is-disabled
+    @extend .cp-button-disabled
+  &.is-primary
+    color $color-white
+    background $color-primary
+    border 1px solid $color-primary
+    &:hover
+      background lighten($color-primary, 5%)
+    &.is-disabled
+      @extend .cp-button-disabled

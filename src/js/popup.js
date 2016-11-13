@@ -14,6 +14,14 @@
     }
   };
 
+  var BUTTON = {
+    CSS_CLASSES: {
+      DISABLED: 'is-disabled'
+    }
+  };
+
+  var ENTER_KEY_CODE = 13;
+
   var AUTHOR_WEBSITE_URL = 'https://www.rafaelcamargo.com';
 
   var _public = {},
@@ -26,6 +34,7 @@
 
   _public.init = function(){
     storeElements();
+    disableSaveButton();
     bindElements();
     getSavedAlerts();
     getCurrentUSDValue();
@@ -41,9 +50,19 @@
     creditLinkElement = $('[data-js="link-credit"]');
   }
 
+  function disableSaveButton(){
+    saveButtonElement.attr('disabled','disabled').addClass(BUTTON.CSS_CLASSES.DISABLED);
+  }
+
+  function enableSaveButton(){
+    saveButtonElement.removeAttr('disabled').removeClass(BUTTON.CSS_CLASSES.DISABLED);
+  }
+
   function bindElements(){
     saveButtonElement.on('click', onButtonSaveClick);
     creditLinkElement.on('click', openAuthorWebsite);
+    alertValueInputElement.on('keyup keypress change mouseenter mouseleave', onAlertValueInputChange);
+    alertValueInputElement.on('keypress', onAlertValueInputKeypress);
   }
 
   function getSavedAlerts(){
@@ -56,12 +75,16 @@
   }
 
   function onButtonSaveClick(){
-    var USDEnteredValue = getUSDValueEntered();
+    var USDEnteredValue = getAlertValueEntered();
+    addEnteredAlertValue(USDEnteredValue);
+  }
+
+  function addEnteredAlertValue(USDEnteredValue){
     addUSDValueToAlertsList(USDEnteredValue);
     chromeService.storage.addAlert(USDEnteredValue);
   }
 
-  function getUSDValueEntered(){
+  function getAlertValueEntered(){
     var value = alertValueInputElement.val().replace(',','.');
     return parseFloat(value);
   }
@@ -76,7 +99,7 @@
     var deleteTriggerElement = $('<span class="cp-alert-list-item-delete">Remove</span>');
     var itemValueElement = $('<span class="cp-alert-list-item-content"></span>');
     itemElement.append(deleteTriggerElement);
-    itemElement.append(itemValueElement.text(value));
+    itemElement.append(itemValueElement.text(value.toFixed(2)));
     itemElement.attr('data-alert-value', value).on('click', removeAlert);
     alertListElement.append(itemElement);
     alertListContainerElement.removeClass('is-hidden');
@@ -155,6 +178,30 @@
 
   function openAuthorWebsite(){
     window.open(AUTHOR_WEBSITE_URL, '_blank');
+  }
+
+  function onAlertValueInputChange(){
+    var value = getAlertValueEntered();
+    if(value)
+      enableSaveButton();
+    else
+      disableSaveButton();
+  }
+
+  function onAlertValueInputKeypress(evt){
+    if(evt.keyCode === ENTER_KEY_CODE)
+      onAlertValueInputEnterPressed();
+  }
+
+  function onAlertValueInputEnterPressed(){
+    var value = getAlertValueEntered();
+    if(value)
+      addEnteredAlertValue(value);
+    resetAlertValueInputElement();
+  }
+
+  function resetAlertValueInputElement(){
+    alertValueInputElement.val('').trigger('change');
   }
 
   window.popup = _public;
