@@ -5,13 +5,20 @@ describe('Chrome Service', function(){
     value: '63'
   };
 
+  var rawFunctions;
+
   beforeEach(function(){
+    rawFunctions = {
+      chromeServiceStorageGet: chromeService.storage.get
+    };
+
     spyOn(chrome.alarms, 'get');
     spyOn(chrome.alarms, 'clear');
   });
 
   afterEach(function(){
     window.chrome = new ChromeApiMock();
+    chromeService.storage.get = rawFunctions.chromeServiceStorageGet;
   });
 
   it('should provide an interface to alarms api', function(){
@@ -161,7 +168,23 @@ describe('Chrome Service', function(){
     });
   });
 
-  it('should note add an alert when it is already stored', function(){
+  it('should add the last notified alert', function(){
+    var lastNotifiedAlertDetails = {
+      value: 2.99,
+      time: 1479244658917
+    };
+    spyOn(chromeService.storage, 'set');
+    chromeService.storage.get = function(item, callback){
+      callback();
+    };
+
+    chromeService.storage.addAlertLastNotified(lastNotifiedAlertDetails);
+    expect(chromeService.storage.set).toHaveBeenCalledWith({
+      dollertLastNotified: lastNotifiedAlertDetails
+    });
+  });
+
+  it('should not add an alert when it is already stored', function(){
     spyOn(chromeService.storage, 'set');
     chromeService.storage.get = function(item, callback){
       callback({
@@ -200,6 +223,18 @@ describe('Chrome Service', function(){
 
     chromeService.storage.removeAlert(3.60);
     expect(chromeService.storage.remove).toHaveBeenCalledWith(storageKey);
+  });
+
+  it('should get the last notified alert', function(){
+    spyOn(chromeService.storage, 'getStorageItem').and.callThrough();
+    spyOn(chromeService.storage, 'getAlertProperties').and.callThrough();
+    chromeService.storage.get = function(item, callback){
+      callback(null);
+    };
+
+    chromeService.storage.getLastNotifiedAlert();
+    expect(chromeService.storage.getAlertProperties).toHaveBeenCalledWith('lastnotified');
+    expect(chromeService.storage.getStorageItem).toHaveBeenCalledWith('dollertLastNotified', null, {});
   });
 
   it('should get existing alerts', function(){

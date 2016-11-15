@@ -22,7 +22,7 @@ describe('Popup', function(){
                     '<span data-js="currency-current-value-variation"></span>' +
                     '<div data-js="alert-list-container" class="is-hidden">' +
                       '<ul data-js="alert-list"></ul>' +
-                    '<div>' +
+                    '</div>' +
                     '<span data-js="link-credit"></span>';
     setFixtures(fixtures);
 
@@ -108,7 +108,7 @@ describe('Popup', function(){
     expect(getAlertListItems().length).toEqual(0);
   });
 
-  it('should show alert list container when some alert is inserted', function(){
+  it('should show alert list container when some alert is added', function(){
     init();
     insertAlert('3,60');
     expect(alertListContainerElement.hasClass('is-hidden')).toEqual(false);
@@ -140,6 +140,17 @@ describe('Popup', function(){
     alertListItems = getAlertListItems();
     $(alertListItems[1]).trigger('click');
     expect(chromeService.storage.removeAlert).toHaveBeenCalledWith('3.65');
+  });
+
+  it('should hide alert list container on popup initialisation when there is no alert saved', function(){
+    spyOn(chromeService.storage, 'getAlerts').and.returnValue({
+      then: function(callback){
+        callback([]);
+      }
+    });
+
+    init();
+    expect(alertListContainerElement.hasClass('is-hidden')).toEqual(true);
   });
 
   it('should hide alert list container when last alert is removed', function(){

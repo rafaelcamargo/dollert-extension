@@ -1,39 +1,45 @@
 describe('Notifier Service', function(){
 
-  var stubStorageGetAlerts,
-    stubAlarmsGet,
-    rawFunctions;
+  var THIRTY_MINUTES_IN_MILLISECONDS = 1800000;
+  var ONE_MINUTE_IN_MILLISECONDS = 60000;
+
+  var rawFunctions,
+    triggerStorageChange,
+    triggerDollertAlarm,
+    mockPromiseResponse;
 
   beforeEach(function(){
     rawFunctions = {
-      chromeServiceStorageGetAlerts: chromeService.storage.getAlerts,
-      chromeServiceAlarmsGet: chromeService.alarms.get
+      chromeServiceStorageOnChanged: chromeService.storage.onChanged,
+      chromeServiceAlarmsAddListener: chromeService.alarms.addListener
     };
 
-    stubStorageGetAlerts = function(resolvedResponse){
-      chromeService.storage.getAlerts = function(){
-        return {
-          then: function(callback){
-            callback(resolvedResponse);
-          }
-        };
+    triggerDollertAlarm = function(){
+      chromeService.alarms.addListener = function(callback){
+        callback();
       };
+      notifierService.init();
     };
 
-    stubAlarmsGet = function(resolvedResponse){
-      chromeService.alarms.get = function(){
-        return {
-          then: function(callback){
-            callback(resolvedResponse);
-          }
-        };
+    triggerStorageChange = function(storage){
+      chromeService.storage.onChanged = function(callback){
+        callback(storage);
       };
+      notifierService.init();
+    };
+
+    mockPromiseResponse = function(object, method, response){
+      spyOn(object, method).and.returnValue({
+        then: function(callback){
+          callback(response);
+        }
+      });
     };
   });
 
   afterEach(function(){
-    chromeService.storage.getAlerts = rawFunctions.chromeServiceStorageGetAlerts;
-    chromeService.alarms.get = rawFunctions.chromeServiceAlarmsGet;
+    chromeService.storage.onChanged = rawFunctions.chromeServiceStorageOnChanged;
+    chromeService.alarms.addListener = rawFunctions.chromeServiceAlarmsAddListener;
   });
 
   it('should set listeners on module initialisation', function(){
@@ -46,16 +52,15 @@ describe('Notifier Service', function(){
   });
 
   it('should check saved alerts on module initialisation', function(){
-    stubStorageGetAlerts([]);
-    spyOn(chromeService.storage, 'getAlerts').and.callThrough();
+    mockPromiseResponse(chromeService.storage, 'getAlerts', []);
 
     notifierService.init();
     expect(chromeService.storage.getAlerts).toHaveBeenCalled();
   });
 
   it('should schedule currency service request when there is some alert stored', function(){
-    stubStorageGetAlerts([3.60]);
-    stubAlarmsGet(undefined);
+    mockPromiseResponse(chromeService.storage, 'getAlerts', [3.60]);
+    mockPromiseResponse(chromeService.alarms, 'get', undefined);
     spyOn(chromeService.alarms, 'create');
 
     notifierService.init();
@@ -65,98 +70,119 @@ describe('Notifier Service', function(){
   });
 
   it('should not schedule currency service request when there is some alert already created', function(){
-    stubStorageGetAlerts([3.60]);
-    stubAlarmsGet({});
+    mockPromiseResponse(chromeService.storage, 'getAlerts', [3.60]);
+    mockPromiseResponse(chromeService.alarms, 'get', {});
     spyOn(chromeService.alarms, 'create');
 
     notifierService.init();
     expect(chromeService.alarms.create).not.toHaveBeenCalled();
   });
 
-  it('should request USD exchange value on module initialisation when there is some alert stored', function(){
-    spyOn(currencyService, 'getCurrentUSDValue').and.returnValue({
-      then: function(){}
-    });
-    chromeService.alarms.addListener = function(callback){
-      callback();
-    };
+  it('should add an alarm listener on module initialisation', function(){
+    spyOn(chromeService.alarms, 'addListener');
 
     notifierService.init();
-    expect(currencyService.getCurrentUSDValue).toHaveBeenCalled();
+    expect(chromeService.alarms.addListener).toHaveBeenCalledWith(jasmine.any(Function));
   });
 
-  it('should clear schedule on module initialisation when there is no alert stored', function(){
-    spyOn(chromeService.alarms, 'clear');
-    chromeService.storage.onChanged = function(callback){
-      callback({});
-    };
+  it('should add a storage change listener on module initialisation', function(){
+    spyOn(chromeService.storage, 'onChanged');
 
     notifierService.init();
+    expect(chromeService.storage.onChanged).toHaveBeenCalledWith(jasmine.any(Function));
+  });
+
+  it('should clear dollert alarm when there is no more alert lefting in storage', function(){
+    spyOn(chromeService.alarms, 'clear');
+
+    triggerStorageChange({});
     expect(chromeService.alarms.clear).toHaveBeenCalledWith('dollertAlarm');
   });
 
-  it('should schedule USD exchange value request on module initialisation when there is alert stored', function(){
+  it('should create a dollert alarm when some alert is stored and there is no alarm created yet', function(){
     spyOn(chromeService.alarms, 'create');
-    spyOn(chromeService.alarms, 'get').and.returnValue({
-      then: function(callback){
-        callback();
-      }
-    });
-    chromeService.storage.onChanged = function(callback){
-      callback({
-        dollerts: [3.60]
-      });
-    };
+    mockPromiseResponse(chromeService.alarms, 'get', null);
 
-    notifierService.init();
-    expect(chromeService.alarms.get).toHaveBeenCalledWith('dollertAlarm');
+    triggerStorageChange({
+      dollerts: [3.60]
+    });
     expect(chromeService.alarms.create).toHaveBeenCalledWith('dollertAlarm', {
       periodInMinutes: 1
     });
   });
 
-  it('should notify user when current USD exchange value matches any previous stored value', function(){
-    spyOn(currencyService, 'getCurrentUSDValue').and.returnValue({
-      then: function(callback){
-        callback({
-          currentValue: '3.60'
-        });
-      }
-    });
-    spyOn(chromeService.storage, 'getAlerts').and.returnValue({
-      then: function(callback){
-        callback([3.55, 3.60]);
-      }
-    });
-    spyOn(chromeService.notification, 'show');
-    chromeService.alarms.addListener = function(callback){
-      callback();
-    };
+  it('should not create a dollert alarm when some alert is stored and there is a alarm already created', function(){
+    spyOn(chromeService.alarms, 'create');
+    mockPromiseResponse(chromeService.alarms, 'get', {});
 
-    notifierService.init();
+    triggerStorageChange({
+      dollerts: [3.60]
+    });
+    expect(chromeService.alarms.create).not.toHaveBeenCalled();
+  });
+
+  it('should notify user when current USD exchange value matches any previous stored value', function(){
+    mockPromiseResponse(currencyService, 'getCurrentUSDValue', {
+      currentValue: '3.60'
+    });
+    mockPromiseResponse(chromeService.storage, 'getAlerts', [3.55, 3.60]);
+    mockPromiseResponse(chromeService.storage, 'getLastNotifiedAlert', {});
+    spyOn(chromeService.notification, 'show');
+    spyOn(chromeService.storage, 'addAlertLastNotified');
+
+    triggerDollertAlarm();
     expect(chromeService.notification.show).toHaveBeenCalledWith(3.6);
+    expect(chromeService.storage.addAlertLastNotified).toHaveBeenCalledWith({
+      value: 3.6,
+      time: jasmine.any(Number)
+    });
   });
 
   it('should not notify user when current USD exchange value doesnt matches any previous stored value', function(){
-    spyOn(currencyService, 'getCurrentUSDValue').and.returnValue({
-      then: function(callback){
-        callback({
-          currentValue: '3.25'
-        });
-      }
+    mockPromiseResponse(currencyService, 'getCurrentUSDValue', {
+      currentValue: '3.25'
     });
-    spyOn(chromeService.storage, 'getAlerts').and.returnValue({
-      then: function(callback){
-        callback([3.55, 3.60]);
-      }
+    mockPromiseResponse(chromeService.storage, 'getAlerts', [3.55, 3.60]);
+    mockPromiseResponse(chromeService.storage, 'getLastNotifiedAlert', {});
+    spyOn(chromeService.notification, 'show');
+
+    triggerDollertAlarm();
+    expect(chromeService.notification.show).not.toHaveBeenCalled();
+  });
+
+  it('should not notify user when current USD matches the latest notified value and user got notified about it in the last 30 minutes', function(){
+    mockPromiseResponse(currencyService, 'getCurrentUSDValue', {
+      currentValue: '2.99'
+    });
+    mockPromiseResponse(chromeService.storage, 'getAlerts', [2.99, 3.60]);
+    mockPromiseResponse(chromeService.storage, 'getLastNotifiedAlert', {
+      value: '2.99',
+      time: new Date().getTime() - THIRTY_MINUTES_IN_MILLISECONDS + ONE_MINUTE_IN_MILLISECONDS
     });
     spyOn(chromeService.notification, 'show');
-    chromeService.alarms.addListener = function(callback){
-      callback();
-    };
 
-    notifierService.init();
+    triggerDollertAlarm();
     expect(chromeService.notification.show).not.toHaveBeenCalled();
+  });
+
+  it('should notify user when current USD matches the latest notified value and user didn\'t got notified about it for more than 30 minutes', function(){
+    mockPromiseResponse(currencyService, 'getCurrentUSDValue', {
+      currentValue: '2.99'
+    });
+    mockPromiseResponse(chromeService.storage, 'getAlerts', [2.99, 3.60]);
+    mockPromiseResponse(chromeService.storage, 'getLastNotifiedAlert', {
+      value: '2.99',
+      time: new Date().getTime() - THIRTY_MINUTES_IN_MILLISECONDS - ONE_MINUTE_IN_MILLISECONDS
+    });
+    spyOn(chromeService.notification, 'show');
+    spyOn(chromeService.storage, 'addAlertLastNotified');
+
+    triggerDollertAlarm();
+    expect(chromeService.notification.show).toHaveBeenCalledWith(2.99);
+    expect(chromeService.storage.addAlertLastNotified).toHaveBeenCalledWith({
+      value: 2.99,
+      time: jasmine.any(Number)
+    });
   });
 
 });

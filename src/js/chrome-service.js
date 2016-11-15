@@ -25,6 +25,7 @@
 
   _public.storage = {
     defaultKey: 'dollerts',
+    lastAlertNotifiedKey: 'dollertLastNotified',
     get: function(item, callback){
       this.handleStorage('get', item, callback);
     },
@@ -44,18 +45,26 @@
           return true;
     },
     addAlert: function(value){
-      this.get(this.defaultKey, function(response){
-        var key = _public.storage.defaultKey;
-        var storageItem = _public.storage.getStorageItem(response);
+      var key = this.defaultKey;
+      this.get(key, function(response){
+        var storageItem = _public.storage.getStorageItem(key, response, []);
         if(!_public.storage.isAlertAlreadySaved(storageItem[key], value))
           storageItem[key].push(value);
+        _public.storage.set(storageItem);
+      });
+    },
+    addAlertLastNotified: function(alertDetails){
+      var key = this.lastAlertNotifiedKey;
+      this.get(key, function(response){
+        var storageItem = _public.storage.getStorageItem(key, response, {});
+        storageItem[key] = alertDetails;
         _public.storage.set(storageItem);
       });
     },
     removeAlert: function(value){
       this.get(this.defaultKey, function(response){
         var key = _public.storage.defaultKey;
-        var storageItem = _public.storage.getStorageItem(response);
+        var storageItem = _public.storage.getStorageItem(key, response);
         for (var i = 0; i < storageItem[key].length; i++)
           if(storageItem[key][i] === parseFloat(value))
             storageItem[key].splice(i, 1);
@@ -65,20 +74,33 @@
           _public.storage.remove(key);
       });
     },
-    getAlerts: function(){
+    getLastNotifiedAlert: function(){
+      return this.getAlerts('lastnotified');
+    },
+    getAlerts: function(alertType){
       var promise = $.Deferred();
-      this.get(this.defaultKey, function(response){
-        var key = _public.storage.defaultKey;
-        var storageItem = _public.storage.getStorageItem(response);
-        promise.resolve(storageItem[key]);
+      var alertProperties = this.getAlertProperties(alertType);
+      this.get(alertProperties.key, function(response){
+        var storageItem = _public.storage.getStorageItem(alertProperties.key, response, alertProperties.type);
+        promise.resolve(storageItem[alertProperties.key]);
       });
       return promise;
     },
-    getStorageItem: function(response){
-      var key = this.defaultKey;
+    getStorageItem: function(key, response, itemType){
       var storageItem = response || {};
-      storageItem[key] = storageItem[key] || [];
+      storageItem[key] = storageItem[key] || itemType;
       return storageItem;
+    },
+    getAlertProperties: function(alertType){
+      var properties = {
+        key: this.defaultKey,
+        type: []
+      };
+      if(alertType == 'lastnotified'){
+        properties.key = this.lastAlertNotifiedKey;
+        properties.type = {};
+      }
+      return properties;
     },
     onChanged: function(callback){
       chrome.storage.onChanged.addListener(callback);

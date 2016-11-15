@@ -1,6 +1,7 @@
 (function($, chromeService, currencyService){
 
   var DOLLERT_ALARM_ID = 'dollertAlarm';
+  var THIRTY_MINUTES_IN_MILLISECONDS = 1800000;
 
   var _public = {};
 
@@ -20,26 +21,26 @@
 
   function onGetAlertsSuccess(alerts){
     if(alerts.length)
-      scheduleUSDExchangeValueRequest();
+      createDollertAlarm();
   }
 
   function setupAlarm(storage){
     if(!storage.dollerts)
-      clearSchedule();
+      clearDollertAlarm();
     else
-      scheduleUSDExchangeValueRequest();
+      createDollertAlarm();
   }
 
-  function scheduleUSDExchangeValueRequest(){
-    chromeService.alarms.get(DOLLERT_ALARM_ID).then(function(alarms){
-      if(!alarms)
+  function createDollertAlarm(){
+    chromeService.alarms.get(DOLLERT_ALARM_ID).then(function(dollertAlarm){
+      if(!dollertAlarm)
         chromeService.alarms.create(DOLLERT_ALARM_ID, {
           periodInMinutes: 1
         });
     });
   }
 
-  function clearSchedule(){
+  function clearDollertAlarm(){
     chromeService.alarms.clear(DOLLERT_ALARM_ID);
   }
 
@@ -55,12 +56,31 @@
   }
 
   function checkCurrentUSDValue(savedAlerts, currentUSDValue){
-    if(chromeService.storage.isAlertAlreadySaved(savedAlerts, currentUSDValue))
-      notifyUser(currentUSDValue);
+    chromeService.storage.getLastNotifiedAlert().then(function(lastNotifiedAlert){
+      if(shouldNotifyUser(savedAlerts, lastNotifiedAlert, currentUSDValue))
+        notifyUser(currentUSDValue);
+    });
   }
 
   function notifyUser(currentUSDValue){
+    var alertDetails = {
+      value: currentUSDValue,
+      time: new Date().getTime()
+    };
     chromeService.notification.show(currentUSDValue);
+    chromeService.storage.addAlertLastNotified(alertDetails);
+  }
+
+  function shouldNotifyUser(savedAlerts, lastNotifiedAlert, currentUSDValue){
+    var isAlertAlreadySaved = chromeService.storage.isAlertAlreadySaved(savedAlerts, currentUSDValue);
+    if(!isAlertAlreadySaved || (isAlertAlreadySaved && wasAlertNotifiedInTheLast30Minutes(currentUSDValue, lastNotifiedAlert)))
+      return false;
+    return true;
+  }
+
+  function wasAlertNotifiedInTheLast30Minutes(currentUSDValue, lastNotifiedAlert){
+    if(currentUSDValue === parseFloat(lastNotifiedAlert.value))
+      return new Date().getTime() - parseInt(lastNotifiedAlert.time) < THIRTY_MINUTES_IN_MILLISECONDS;
   }
 
   _public.init();
