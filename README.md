@@ -16,6 +16,11 @@ To contribute with this project, do the following:
 - Upload `dist` directory as a *develop extension* (https://developer.chrome.com/extensions/getstarted#unpacked)
 - Done!
 
+## Pull Requests
+Make sure to run `grunt karma` in your branch before open a PR. We use coverage threshold to ensure 100% of code coverage.
+So, if you added one function only, but did not write an unit test for that, build will not pass.
+
 ## Release History
+- 2016/11/15 **0.3.0** Added form validation and dismissing last alert notified during 30 minutes
 - 2016/05/23 **0.2.0** Added dollar current value and its variation and changed currency API
 - 2016/04/10 **0.1.0** Initial Release

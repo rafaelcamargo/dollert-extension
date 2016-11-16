@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Dollert",
   "description": "Get notified when dollar reaches the value you are looking for",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "browser_action": {
     "default_icon": "popup-icon.png",
     "default_popup": "popup.html"
