@@ -21,6 +21,6 @@ Make sure to run `grunt karma` in your branch before open a PR. We use coverage 
 So, if you added one function only, but did not write an unit test for that, build will not pass.
 
 ## Release History
-- 2016/11/15 **0.3.0** Added form validation and dismissing last alert notified during 30 minutes
+- 2016/11/15 **0.3.0** Added form validation and dismissing last notified alert during 30 minutes
 - 2016/05/23 **0.2.0** Added dollar current value and its variation and changed currency API
 - 2016/04/10 **0.1.0** Initial Release
