@@ -51,8 +51,8 @@ describe('Currency Service', function(){
     });
 
     expect(parsedData).toEqual({
-      "currentValue": "3.25",
-      "currentVariation": "-0.5%"
+      currentValue: '3.25',
+      currentVariation: '-0.5%'
     });
   });
 
