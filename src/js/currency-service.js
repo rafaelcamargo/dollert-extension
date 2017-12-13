@@ -1,6 +1,6 @@
 (function($){
 
-  var RESOURCE_URL =  'https://economia.awesomeapi.com.br/json/USD-BRL/';
+  var RESOURCE_URL =  'https://dollert-api.wedeploy.io/rates';
 
   var _public = {};
 
@@ -10,21 +10,14 @@
       url: RESOURCE_URL,
       'content-type': 'application/json',
       success: function(response){
-        promise.resolve(parseResponse(response));
+        promise.resolve(response[0]);
       },
-      error: function(response){
-        promise.reject(response);
+      error: function(err){
+        promise.reject(err);
       }
     });
     return promise;
   };
-
-  function parseResponse(response){
-    return {
-      currentValue: response[0].bid.substring(0,4),
-      currentVariation: response[0].pctChange.substring(0,4) + '%'
-    };
-  }
 
   window.currencyService = _public;
 

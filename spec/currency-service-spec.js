@@ -1,20 +1,8 @@
 describe('Currency Service', function(){
 
   var CURRENT_USD_VALUE_SUCCESS_RESPONSE = [{
-    "idreg":"190478",
-    "code":"USD",
-    "codein":"BRL",
-    "name":"Dólar Comercial",
-    "high":"3.2733",
-    "pctChange":"-0.528",
-    "open":"0",
-    "bid":"3.2595",
-    "ask":"3.261",
-    "timestamp":"1474401540000",
-    "low":"3.2473",
-    "notFresh":"1",
-    "varBid":"-0.0173",
-    "create_date":"2016-09-21 00:30:10"
+    "currentValue": "3.25",
+    "currentVariation": "-0.5%"
   }];
   var CURRENT_USD_VALUE_ERROR_RESPONSE = 'failed to get current USD value';
 
@@ -34,7 +22,7 @@ describe('Currency Service', function(){
     spyOn($, 'ajax');
     currencyService.getCurrentUSDValue();
     expect($.ajax).toHaveBeenCalledWith({
-      url: 'https://economia.awesomeapi.com.br/json/USD-BRL/',
+      url: 'https://dollert-api.wedeploy.io/rates',
       'content-type': 'application/json',
       success: jasmine.any(Function),
       error: jasmine.any(Function)
@@ -63,8 +51,8 @@ describe('Currency Service', function(){
     });
 
     expect(parsedData).toEqual({
-      currentValue: '3.25',
-      currentVariation: '-0.5%'
+      "currentValue": "3.25",
+      "currentVariation": "-0.5%"
     });
   });
 
